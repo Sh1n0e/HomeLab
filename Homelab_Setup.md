@@ -2,11 +2,11 @@
 
 This is the beginning of my homelab journey. To start I will be using a Raspberry Pi Zero 2 W and I initally plan to use this to host the following:
 
+- pihole server
 - Host a file server
 - create a self-hosted website with the use of nginx
   - use nginx-reverse-proxy to enable my homelab to be accessible via WAN
-- Jellyfin - Enables me to host shows and movies remotely
-- pihole server
+
 
 This whole project stemmed from the idea that I use github as a means to store my notes that I take from my classes, but I figured I should be able to host it in my own way beacuse it would look a lot cooler. It would also make for a nice way to develop my own learning.
 
