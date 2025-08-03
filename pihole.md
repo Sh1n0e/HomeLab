@@ -42,3 +42,9 @@ The steps I had to do was very simple:
 3. Change the dns server from being collected automatically to enter the address that pihole is being hosted on.
 
 If all is done correctly then this means that now no ads will show up as pihole blocks any dns responses that are being sent out by websites that you are visiting.
+
+## Future Improvements
+
+I could definitely improve this in the future by making configurations to my personal home router to set it up with pihole being the default DNS server.
+- This helps create a more scalable solution in comparison to how I currently have it set up so that it has to be manually configured on every machine in my home currently.
+- I could also configure my pihole to block certain websites to get practice with troubleshooting how normal everyday troubles can be fixed to somewhat simulate a small business or office style type of environment.
