@@ -22,16 +22,26 @@ sudo mkdir /mnt/<drive name>
 2. Mount disk into the recently created directory
 
 sudo mount /dev/sda /mnt/<drive name>
+
+3. Set up the drive to ensure that on every boot it will be mounted:
+
+sudo blkid: grab relevenant information about your drive
+
+sudo vim /etc/fstab (I personally prefer using vim)
+
+enter the following into a new line: 
+
+UUID=enter_uuid_here /mnt/Drive_Name auto nofail,uid=enter_uid_here,gid=enter_gid_here,noatime 0 0
 ```
 
 Now that the hard drive has been mounted, I will execute the following docker compose command:
 
 ```
-docker run \
+sudo docker run -d \
     -v /path/to/drive:/srv \
     -v filebrowser_database:/database \
     -v filebrowser_config:/config \
-    -p xxxx:80 \
+    -p 9080:80 \
     filebrowser/filebrowser
 
 Where xxx is an arbritrary port number I assign And /path/to/drive is the hard drive you want to mount for storage.
@@ -45,7 +55,7 @@ Where xxx is an arbritrary port number I assign And /path/to/drive is the hard d
 
 1. So after creating the image successfully, I am now trying to access filebrowser by entering the IP that has been assigned to that image in portainer with the port I set it to earlier, however it is not working. **Solution** - Just like Portainer, I can enter the hostname of my raspberry pi that is running the system and enter the port number I assigned.
 
-2. Even when logged in as admin I cannot add/delete files and folders. **Solution** - Temporarily, I have changed the permissions of the file using ```chown o+rw /path/to/drive``` and that seems to have fixed the problem. I can work out a more secure solution down the line before I allow access from beyond my home network.
+2. Even when logged in as admin I cannot add/delete files and folders. **Solution** - Temporarily, I have changed the permissions of the file using ```chown o+rw /path/to/drive``` and that seems to have fixed the problem. I can work out a more secure solution down the line before I allow access from beyond my home network. **Update** - I have adjusted it so that in my initial compose, ive set the permissions of the drive to work on users logged into filebrowser so it should be more secure.
 
 3. Recently discovered that if the raspberry pi im hosting is unplugged, the image won't relaunch to the hard drive that I had mounted earlier. **Solution** - I used the following command: ```sudo -H vim etc/fstab``` and add in the UID of the hard drive, where it is located and its default permissions. This should make it so that when it starts up, my hard drive should be found and not cause this issue again.
 
