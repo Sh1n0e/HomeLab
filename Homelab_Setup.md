@@ -39,7 +39,7 @@ sudo docker ps
 
 If all is good then we can go to the web server by typing the following into your search bar:
 
-``` https:localhost.loca:<portNumber>```
+``` https:localhost.local:<portNumber>```
 - Where the local host is what you would name your raspberry pi (at least for me because while the server runs on the pi itself, I will manage everything remotely via my PC)
 
 You will be prompted with a login screen where you will create your credentials so go on ahead and do that as well as entering your assigned license key. Everything else will be taken care of from there.
