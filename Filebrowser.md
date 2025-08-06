@@ -72,3 +72,15 @@ Main things I learnt:
 - Executing docker compose command while editing parameters to fit what I need
 - Adjusting read and write permission of directories present.
 - Troubleshooting issues that come about when it comes to composing the container to ensure everything works properly.
+
+----
+
+## Update:
+
+My plan now is to add extra security measures in place to make FileBrowser more secure as I slowly begin to make it accesible from beyond my home network.
+
+Further details will be added in the following points below:
+- Point 1
+- Point 2
+
+And I will add the methods used to add these new features when I get to working on it.
