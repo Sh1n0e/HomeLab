@@ -11,7 +11,7 @@ Before I begin anything, I have my raspberry pi connected to a 1TB external HDD 
 Then from there I need to mount the drive so I will execute the following commands:
 
 ```
-0. Only applicapble if this was a drive used in windows: Reformat the drive to be an appropriate drive type for linux. (I am using ext4 in my case)
+0. Only applicable if this was a drive used in windows: Reformat the drive to be an appropriate drive type for linux. (I am using ext4 in my case)
 
 sudo mkfs.ext4 /dev/(sdb/sdc/sda) 
 
@@ -45,7 +45,9 @@ Where xxx is an arbritrary port number I assign And /path/to/drive is the hard d
 
 1. So after creating the image successfully, I am now trying to access filebrowser by entering the IP that has been assigned to that image in portainer with the port I set it to earlier, however it is not working. **Solution** - Just like Portainer, I can enter the hostname of my raspberry pi that is running the system and enter the port number I assigned.
 
-2. Even when logged in as admin I cannot add/delete files and folders. **Solution** - Temporarily, I have changed the permissions of the file using ```chown o+rw /path/to/drive``` and that seems to have fixewd the problem. I can work out a more secure solution down the line before I allow access from beyond my home network.
+2. Even when logged in as admin I cannot add/delete files and folders. **Solution** - Temporarily, I have changed the permissions of the file using ```chown o+rw /path/to/drive``` and that seems to have fixed the problem. I can work out a more secure solution down the line before I allow access from beyond my home network.
+
+3. Recently discovered that if the raspberry pi im hosting is unplugged, the image won't relaunch to the hard drive that I had mounted earlier. **Solution** - I used the following command: ```sudo -H vim etc/fstab``` and add in the UID of the hard drive, where it is located and its default permissions. This should make it so that when it starts up, my hard drive should be found and not cause this issue again.
 
 ----
 
