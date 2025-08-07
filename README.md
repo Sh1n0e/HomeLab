@@ -15,3 +15,6 @@ I will update this as it goes with what has recently been added, removed or upda
 - Attempted to auto mount the external hard drive on startup but its not working.
   - I tried fixing this by putting the drive intto the etc/fstab file but so far it is not working
   - Temporary solution: manually mount hard drive on start and refresh the container and I will have access to my data.
+
+08/07/25:
+- Using Tailscale as a VPN, I can now access my home server services from anywhere so long as I am connected to it.
