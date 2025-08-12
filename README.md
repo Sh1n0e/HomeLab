@@ -18,3 +18,6 @@ I will update this as it goes with what has recently been added, removed or upda
 
 08/07/25:
 - Using Tailscale as a VPN, I can now access my home server services from anywhere so long as I am connected to it.
+
+08/12/25:
+- Created Nginx-proxy manager with DuckDNS to create SSL certificates as well as creating proxy hosts so that now within the internal network, or when connected to a VPN, I can enter a domain name rather than the IP address or hostname of my Raspberry Pi.
