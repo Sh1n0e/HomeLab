@@ -41,7 +41,7 @@ sudo docker run -d \
     -v /path/to/drive:/srv \
     -v filebrowser_database:/database \
     -v filebrowser_config:/config \
-    -p 9080:80 \
+    -p xxxx:80 \
     filebrowser/filebrowser
 
 Where xxx is an arbritrary port number I assign And /path/to/drive is the hard drive you want to mount for storage.
