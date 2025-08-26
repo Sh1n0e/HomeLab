@@ -18,6 +18,8 @@ Note: MAKE SURE TO NOT RUN THIS WITH SUDO.
 ansible-galaxy collection install community.docker 
 ```
 
-After those two steps are done we can begin working with Ansible to set everythign up.
+After those two steps are done we can begin working with Ansible to set everything up.
 
-3. A
+### Post set-up
+
+Now that everything is set up, I had to make many changes to my install_docker.yml file, but now I haev managed to get it to work and is now on my remote server that is being hosted on proxmox.
