@@ -1,9 +1,17 @@
-tasks:
+- name: Install Docker and required packages
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+      tags: [packages]
+
     - name: Install aptitude
       apt:
         name: aptitude
-        state: latest
-        update_cache: true
+        state: present
+      tags: [packages]
 
     - name: Install required system packages
       apt:
@@ -15,25 +23,46 @@ tasks:
           - python3-pip
           - virtualenv
           - python3-setuptools
-        state: latest
-        update_cache: true
+        state: present
+        update_cache: no
+      tags: [packages]
 
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+        validate_certs: yes
+      tags: [docker]
 
     - name: Add Docker Repository
       apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
+      tags: [docker]
 
-    - name: Update apt and install docker-ce #Ensuring we are using the latest version of docker community edition
+    - name: Update apt cache after adding Docker repo
       apt:
-        name: docker-ce
-        state: latest
-        update_cache: true
+        update_cache: yes
+      tags: [docker]
+
+    - name: Install docker-ce
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+        update_cache: no
+      tags: [docker]
 
     - name: Install Docker Module for Python
-      pip:
-        name: docker
+      apt:
+        name: python3-docker
+        state: present
+      tags: [python]
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present 
+      tags: [docker]
