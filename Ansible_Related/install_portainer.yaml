@@ -1,0 +1,30 @@
+---
+- hosts: all
+  tasks:
+    - name: Ensure docker-compose is installed
+      ansible.builtin.package:
+        name: docker-compose 
+        state: present 
+
+    - name: Ensure Docker is running 
+      ansible.builtin.service:
+        name: docker 
+        state: started 
+        enabled: true 
+
+    - name: Setting up portainer directory
+      ansible.builtin.file:
+        path: /home/topez/docker-compose/portainer
+        state: directory
+      
+    - name: Deploy portainer using Docker Compose
+      community.docker.docker_container:
+        name: portainer 
+        image: portainer/portainer-ce
+        ports:
+          - "9000:9000"
+          - "8000:8000"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock 
+          - portainer_data:/data 
+        restart_policy: always
