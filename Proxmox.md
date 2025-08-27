@@ -9,4 +9,7 @@ After doing some experimentation on my raspberry pi in terms of self hosting my 
 3. SMB file sharing 
 4. TrueNAS scale to act as mass cloud storage 
 
+### Updates:
+
+August 26: Successfully created new proxmox environment and used ansible to automate the installation of docker and deployment of Portainer to host docker containers.
 
