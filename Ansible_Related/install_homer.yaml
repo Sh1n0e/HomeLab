@@ -1,0 +1,63 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: ensure docker-compose is installed
+      ansible.builtin.package:
+        name: docker-compose 
+        state: present
+
+    - name: Ensure Docker is running
+      ansible.builtin.service:
+        name: docker 
+        state: started 
+        enabled: true 
+
+    - name: remove exising docker-compose file (if it exists)
+      ansible.builtin.file:
+        path: "home/topez/docker-compose/homer/docker-compose.yml"
+        state: absent
+
+    - name: Create homer directories
+      ansible.builtin.file:
+        path: "/home/topez/docker-compose/homer/data"
+        state: directory
+
+    - name: Create Docker Compose file for homer 
+      ansible.builtin.copy:
+        dest: "/home/topez/docker-compose/homer/docker-compose.yml"
+        content: |
+          services:
+            homer:
+              image: b4bz/homer
+              container_name: homer
+              volumes:
+                - /home/topez/docker-compose/homer/data:/www/assets
+              ports:
+                - 8080:8080
+              environment:
+                - INIT_ASSETS=1 
+              restart: unless-stopped
+    
+    - name: Set permissions for assets 
+      ansible.builtin.file:
+        path: "/home/topez/docker-compose/homer/assets"
+        owner: "1000"
+        group: "1000"
+        mode: "0755"
+        recurse: yes 
+
+    - name: Deploy homer using Docker Compose 
+      community.docker.docker_compose_v2:
+        project_src: "/home/topez/docker-compose/homer"
+        state: present
+
+    - name: Check if assets were created 
+      ansible.builtin.command: ls -la /home/topez/docker-compose/homer/assets/
+      register: asset_list
+      failed_when: false 
+
+    - name: debugging
+      ansible.builtin.debug:
+        var: asset_list.stdout

@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Ensure docker-compose is installed
+      ansible.builtin.package:
+        name: docker-compose 
+        state: present 
+
+    - name: Ensure Docker is running 
+      ansible.builtin.service:
+        name: docker 
+        state: started 
+        enabled: true 
+
+    - name: Setting up Nginx directory
+      ansible.builtin.file:
+        path: /home/topez/docker-compose/nginxProxyManager
+        state: directory
+      
+    - name: Deploy Nginx Proxy Manager using Docker Compose
+      community.docker.docker_container:
+        name: nginx-proxy-manager
+        image: jc21/nginx-proxy-manager:latest
+        ports:
+          - "80:80"
+          - "81:81"
+          - "443:443"
+        volumes:
+          - ./data/data
+          - ./letsencrypt:/etc/letsencrypt 
+        restart_policy: always

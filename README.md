@@ -25,3 +25,11 @@ I will update this as it goes with what has recently been added, removed or upda
 08/19/25:
 - Using a cloudflare tunnel to be able to have my services accessible by the public
 - Added 2 factor authentication so that even though the link is publicly accessible, you will still need an email that is within the accepted list of emails to get a code for access to my filebrowser service.
+
+08/27/25:
+- Made the switch to use an old laptop to host Proxmxo Virtual Environment to act as a type 1 hypervisor and run services virtually
+- The services include:
+  - Jellyfin
+  - Nginx Proxy Manager 
+  - Portainer CE 
+- Main reason is so that I can also run multiple instances of VM's to conduct certain tasks. So far I have managed to create a separate VM using Open Media Vault to host SMB shares that currently Jellyfin uses when hosting Shows and Movies.

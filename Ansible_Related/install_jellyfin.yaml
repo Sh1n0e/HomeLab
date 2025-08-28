@@ -1,0 +1,123 @@
+---
+- hosts: all
+  become: true
+  vars:
+    smb_server: "//10.0.0.111/Media"
+    smb_username: "Movie"
+    smb_password: "Movie"
+    local_mount_point: "/mnt/media"
+    jellyfin_user: "topez"
+    jellyfin_uid: 1000
+    jellyfin_gid: 1000 
+
+
+  tasks: 
+    - name: Ensure docker-compose is installed
+      ansible.builtin.package:
+        name: docker-compose
+        state: present
+
+    - name: Ensure Docker is running
+      ansible.builtin.service:
+        name: docker 
+        state: started 
+        enabled: true 
+
+    - name: Creating medai mount directory
+      ansible.builtin.file:
+        path: "{{ local_mount_point }}"
+        state: directory 
+        mode: '0755'
+        owner: "{{ jellyfin_uid }}"
+        group: "{{ jellyfin_gid }}"
+
+    - name: Install utils for SMB mounting
+      ansible.builtin.package:
+        name: cifs-utils
+        state: present
+
+    - name: Creating credentials file for SMB 
+      ansible.builtin.copy:
+        content: |
+          username={{ smb_username }}
+          password={{ smb_password }}
+        dest: /etc/smb-credentials
+        owner: root
+        group: root 
+        mode: '0600'
+
+    - name: Mount SMB share from VM
+      ansible.builtin.mount:
+        path: "{{ local_mount_point }}"
+        src: "{{ smb_server }}"
+        fstype: cifs 
+        opts: "credentials=/etc/smb-credentials,uid={{ jellyfin_uid }},gid={{ jellyfin_gid }},file_mode=0755,dir_mode=0775"
+        state: mounted 
+
+    - name: Create Jellyfin directories
+      ansible.builtin.file:
+        path: "/home/{{ jellyfin_user }}/docker-compose/Jellyfin/{{ item }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ jellyfin_uid }}"
+        group: "{{ jellyfin_gid }}"
+      loop:
+        - ""
+        - "config"
+        - "cache"
+
+    - name: List SMB share contents
+      ansible.builtin.shell:
+        cmd: "ls -la {{ local_mount_point }}"
+      register: smb_contents
+
+    - name: Display SMB contents 
+      ansible.builtin.debug:
+        var: smb_contents.stdout_lines
+
+    - name: Create Docker Compose file for jellyfin 
+      ansible.builtin.copy:
+        content: |
+          version: '3.8'
+          services:
+            jellyfin:
+              image: jellyfin/jellyfin:latest
+              container_name: jellyfin
+              user: "{{ jellyfin_uid }}:{{ jellyfin_gid }}"
+              environment:
+                - TZ=America/Toronto
+                - JELLYFIN_PublishedServerUrl=http://10.0.0.236:8096
+              volumes:
+                - /home/{{ jellyfin_user }}/docker-compose/Jellyfin/config:/config
+                - /home/{{ jellyfin_user }}/docker-compose/Jellyfin/cache:/cache
+                - {{ local_mount_point }}/Movies:/Media/Movies
+                - {{ local_mount_point }}/Shows:/Media/Shows
+              ports:
+                - "8096:8096"
+                - "8920:8920"
+              restart: unless-stopped
+              devices:
+                - "/dev/dri:/dev/dri"  # Remove if no hardware transcoding
+              networks:
+                - jellyfin_net
+      
+          networks:
+            jellyfin_net:
+              driver: bridge 
+        dest: "/home/{{ jellyfin_user }}/docker-compose/Jellyfin/docker-compose.yml"
+        owner: "{{ jellyfin_uid }}"
+        group: "{{ jellyfin_gid }}"
+        mode: '0644'
+
+    - name: Deploy Jellyfin using Docker Compose 
+      community.docker.docker_compose_v2:
+        project_src: "/home/{{ jellyfin_user }}/docker-compose/Jellyfin"
+        state: present 
+
+    - name: Have SMB persist on reboot
+      ansible.builtin.lineinfile:
+        path: /etc/fstab 
+        line: "{{ smb_server }} {{ local_mount_point }} cifs credentials=/etc/smb-credentials,uid={{ jellyfin_uid }},gid={{ jellyfin_gid }},file_mode=0775,dir_mode=0775 0 0"
+        state: present 
+        create: yes
+
