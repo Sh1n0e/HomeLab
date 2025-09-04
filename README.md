@@ -33,3 +33,11 @@ I will update this as it goes with what has recently been added, removed or upda
   - Nginx Proxy Manager 
   - Portainer CE 
 - Main reason is so that I can also run multiple instances of VM's to conduct certain tasks. So far I have managed to create a separate VM using Open Media Vault to host SMB shares that currently Jellyfin uses when hosting Shows and Movies.
+
+08/30/25:
+- Created a dashboard that displays services currently being run within my homelab and is available to see to the public via cloudflared tunnel.
+- Created a self-hosted Nextcloud instance to have a local cloud.
+- Implemented API integration with the following:
+  - Nextcloud: shows free space available, active users, files and shared items
+  - Proxmox: number of VMs up and operating, Linux Containers runing, CPU utilization and memory utilization
+  - Portainer: Display containers running, containers stopped, and total containers
